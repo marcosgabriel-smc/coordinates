@@ -60,7 +60,7 @@ router.get('/coordinates', function(req, res, next) {
         y: y,
         map: defaultMap
     });
-
+    
     res.json(userCoordinates);
 });
 
@@ -75,10 +75,7 @@ router.get('/transform-coordinates', function(req, res, next) {
         map: defaultMap
     });
 
-    let relative_coordinates = userCoordinates.transform(defaultScreen);
-    console.log(defaultScreen);
-
-    // res.json(relative_coordinates);
+    res.json(userCoordinates);
 });
 
 module.exports = router;
