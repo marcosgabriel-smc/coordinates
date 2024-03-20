@@ -11,6 +11,8 @@ class Map {
 
 const defaultMap = new Map({
     name: "Default Map",
+    minX: 0,
+    minY: 0,
     maxX: 100,
     maxY: 100,
     isScreen: false
@@ -18,6 +20,8 @@ const defaultMap = new Map({
 
 const defaultScreen = new Map({
     name: "Default Screen",
+    minX: 0,
+    minY: 0,
     maxX: 100,
     maxY: 100,
     isScreen: true
@@ -46,13 +50,18 @@ class Coordinates {
     }
 }
 
-let coords1 = new Coordinates(80, 20, defaultMap);
-let coords2 = new Coordinates(80, 80, defaultScreen);
+// let coords1 = new Coordinates(80, 20, defaultMap);
+// let coords2 = new Coordinates(80, 80, defaultScreen);
 
+const coord3 = new Coordinates(10, 18, defaultMap);
 
+let relative_coord = coord3.transform(defaultScreen);
 
-console.log(coords1.transform(defaultScreen));
-console.log(coords2.transform(defaultMap));
+// console.log(coord3);
+// console.log(relative_coord);
+
+// console.log(coords1.transform(defaultScreen));
+// console.log(coords2.transform(defaultMap));
 
 
 
