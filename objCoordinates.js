@@ -51,30 +51,4 @@ const defaultScreen = objCoordinates.map({
     isScreen: true
 });
 
-const testmap = objCoordinates.map({    
-    minX: 50, 
-    minY: 50,
-    maxX: 200, 
-    maxY: 200,
-    isScreen: false
-});
-
-
-const testCoordinates = objCoordinates.coordinates({
-    x: 80,
-    y: 60, 
-    map: testmap,
-})
-
-
-const relative_coord = objCoordinates.transform({
-    coordinates: objCoordinates.coordinates({x: 80, y: 60, map: testmap}),
-    relativeMap: defaultScreen
-})
-
-console.log(testCoordinates);
-console.log(relative_coord);
-
-
-
 module.exports = {objCoordinates, defaultMap, defaultScreen };
