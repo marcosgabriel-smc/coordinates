@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const { Map, Coordinates, defaultMap, defaultScreen } = require('../coordinatesClasses');
+const { objCoordinates, defaultMap, defaultScreen } = require('../objCoordinates');
 
 router.get('/default-map', function(req, res, next) {
     res.json(defaultMap);
@@ -17,10 +17,10 @@ router.get('/new-map', function(req, res, next) {
     const maxY = parseInt(req.query.maxY);
     const minX = req.query.minX ?? 0;
     const minY = req.query.minY ?? 0;
-    const name = req.query.name;  
+    const mapName = req.query.name;  
     
-    const userMap = new Map({
-        name: name,
+    const userMap = objCoordinates.map({
+        mapName: mapName,
         maxX: maxX,
         maxY: maxY,
         minX: parseInt(minX),
@@ -36,10 +36,10 @@ router.get('/new-screen', function(req, res, next) {
         const maxY = parseInt(req.query.maxY);
         const minX = req.query.minX ?? 0;
         const minY = req.query.minY ?? 0;
-        const name = req.query.name;  
+        const mapName = req.query.name;  
         
-        const userScreen = new Map({
-            name: name,
+        const userScreen = objCoordinates.map({
+            mapName: mapName,
             maxX: maxX,
             maxY: maxY,
             minX: parseInt(minX),
@@ -55,7 +55,7 @@ router.get('/coordinates', function(req, res, next) {
     const x = parseInt(req.query.x);
     const y = parseInt(req.query.y);
 
-    const userCoordinates = new Coordinates({
+    const userCoordinates = objCoordinates.coordinates({
         x: x,
         y: y,
         map: defaultMap
@@ -69,13 +69,12 @@ router.get('/transform-coordinates', function(req, res, next) {
     const x = parseInt(req.query.x);
     const y = parseInt(req.query.y);
 
-    const userCoordinates = new Coordinates({
-        x: x,
-        y: y,
-        map: defaultMap
+    const userCoordinates = objCoordinates.transform({
+        coordinates: objCoordinates.coordinates({x: x, y: y, map: defaultMap}),
+        relativeMap: defaultScreen
     });
 
-    res.json(userCoordinates.transform(defaultScreen));
+    res.json(userCoordinates);
 });
 
 module.exports = router;
