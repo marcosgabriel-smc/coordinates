@@ -1,68 +1,80 @@
-class Map {
-    constructor({name, minX = 0, minY = 0, maxX, maxY, isScreen}) {
-        this.name = name; 
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.isScreen = isScreen;
-    }
-}
+const objCoordinates = {
+    map:  function(params) {        
+        return {
+            mapName: params.mapName,
+            minX: params.minX ?? 0,
+            minY: params.minY ?? 0,
+            maxX: params.maxX, 
+            maxY: params.maxY,
+            isScreen: params.isScreen
+        };
+    },
 
-const defaultMap = new Map({
-    name: "Default Map",
+    coordinates: function(params) {
+        let x = ((params.x - params.map.minX) * 100) / (params.map.maxX - params.map.minX);
+        let y = ((params.y - params.map.minY) * 100) / (params.map.maxY - params.map.minY);
+        return {
+            x: x/100,
+            y: params.map.isScreen ? (100 - y)/100 : y/100
+        };
+        // Floats problem. 
+    },
+
+    transform: function(params) {
+        let x = params.coordinates.x;
+        let y = params.coordinates.y;
+        let relativeMap = params.relativeMap;
+
+        return {
+            x: Math.round((relativeMap.maxX - relativeMap.minX) * x + relativeMap.minX),
+            y: relativeMap.isScreen ? Math.round(relativeMap.maxY - ((relativeMap.maxY - relativeMap.minY) * y + relativeMap.minY)) : Math.round((relativeMap.maxY - relativeMap.minY) * y + relativeMap.minY)
+        };
+
+    }
+};
+
+const defaultMap = objCoordinates.map({
+    mapName: "Default Map",
     minX: 0,
     minY: 0,
-    maxX: 100,
+    maxX: 100, 
     maxY: 100,
     isScreen: false
 });
 
-const defaultScreen = new Map({
-    name: "Default Screen",
+const defaultScreen = objCoordinates.map({
+    mapName: "Default Screen",
     minX: 0,
     minY: 0,
-    maxX: 100,
+    maxX: 100, 
     maxY: 100,
     isScreen: true
 });
 
-class Coordinates {
-    constructor(x, y, map) {
-        this.x = x;
-        this.y = y;
-        this.map = map;
-    }
+const testmap = objCoordinates.map({    
+    minX: 50, 
+    minY: 50,
+    maxX: 200, 
+    maxY: 200,
+    isScreen: false
+});
 
-    transform(relativeMap){
-        const relativeCoord = new Coordinates('', '', relativeMap);
-        const newX = (this.x - this.map.minX) * (relativeMap.maxX - relativeMap.minX) / (this.map.maxX - this.map.minX);
-        relativeCoord.x = newX + relativeMap.minX;        
-       
-        const newY = (this.y - this.map.minY) * (relativeMap.maxY - relativeMap.minY) / (this.map.maxY - this.map.minY);
-       
-        if (this.map.isScreen === relativeMap.isScreen) {
-            relativeCoord.y = newY;
-        } else {
-            relativeCoord.y = ((relativeMap.maxY - relativeMap.minY) - newY) + relativeMap.minY;
-        };
-        return relativeCoord;
-    }
-}
 
-// let coords1 = new Coordinates(80, 20, defaultMap);
-// let coords2 = new Coordinates(80, 80, defaultScreen);
+const testCoordinates = objCoordinates.coordinates({
+    x: 80,
+    y: 60, 
+    map: testmap,
+})
 
-const coord3 = new Coordinates(10, 18, defaultMap);
 
-let relative_coord = coord3.transform(defaultScreen);
+const relative_coord = objCoordinates.transform({
+    coordinates: objCoordinates.coordinates({x: 80, y: 60, map: testmap}),
+    relativeMap: defaultScreen
+})
 
-// console.log(coord3);
-// console.log(relative_coord);
-
-// console.log(coords1.transform(defaultScreen));
-// console.log(coords2.transform(defaultMap));
+console.log(testCoordinates);
+console.log(relative_coord);
 
 
 
-module.exports = { Map, Coordinates, defaultMap, defaultScreen };
+module.exports = {objCoordinates, defaultMap, defaultScreen };
